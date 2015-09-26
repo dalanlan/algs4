@@ -1,0 +1,8 @@
+*.zip
+bin/*
+checkstyle*
+findbugs*
+*.jar
+hello/*
+*/*.zip
+*/*.class
