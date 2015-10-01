@@ -50,7 +50,7 @@ public class Deque<Item> implements Iterable<Item> {
         first = new Node<Item>();
         first.item = item;
         
-        if( !isEmpty())
+        if (!isEmpty())
         {
             oldfirst.prev = first;
             first.next = oldfirst;
@@ -94,7 +94,7 @@ public class Deque<Item> implements Iterable<Item> {
         oldfirst.next = null;  
         size--;
         
-        if(isEmpty())
+        if (isEmpty())
             last = first;
         else {
             first.prev = null;
@@ -111,7 +111,7 @@ public class Deque<Item> implements Iterable<Item> {
             throw new NoSuchElementException("deque underflow");
        
         Item item = last.item;
-        if(first == last)
+        if (first == last)
         {
             first = null;
             last = null;    

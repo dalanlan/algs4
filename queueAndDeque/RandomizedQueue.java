@@ -51,7 +51,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (size == q.length) 
             resize(2*q.length);
         q[last++] = item;
-        if( last == q.length) 
+        if (last == q.length) 
             last = 0;   // wrap-around
         size++;
     }
@@ -62,47 +62,31 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item dequeue() {
         if (isEmpty())
             throw new NoSuchElementException("Queue underflow");
-        //StdOut.print("first = "+first + ", last = "+last);
+       
         int tmp_last;
         if (last < first)
         {
             tmp_last = last + q.length;
         }
-        if (last == first && size == q.length) {
+        else if (last == first && size == q.length) {
             tmp_last = last + q.length;
         }
         else
             tmp_last = last;
-        //StdOut.print(", tmp_last = "+tmp_last);
+        
         int index = (StdRandom.uniform(first, tmp_last) % q.length);
-        //StdOut.println(", index = "+index);
-        Item item = q[index];
         
-        if(index == first)
-        {
-            q[first] = null;
-            first++;
-            if (first == q.length)
-                first = 0;           // wrap- around
-        }
-        else {
-            if(index < first)
-                index += q.length;
-            
-            for(int i = index; i < tmp_last; i++)
-            {
-                q[i % q.length] = q[(i+1) % q.length];
-            }
-            q[tmp_last%q.length] = null;
-            last--;
-            if(last == -1)
-                last = q.length - 1; // wrap-around
-        }
+        
+        Item tmp = q[index];
+        q[index] = q[first];
+        q[first] = null;
         size--;
-        
-        if(size > 0 && size == q.length/4)
+        first++;
+        if (first == q.length) 
+            first = 0;
+        if (size > 0 && size == q.length/4)
             resize(q.length/2);
-        return item;
+        return tmp;
 
     }
     
@@ -112,14 +96,19 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         if (isEmpty())
             throw new NoSuchElementException("Queue underflow");
+        
         int tmp_last;
-        if(last < first)
+        if (last < first)
         {
+            tmp_last = last + q.length;
+        }
+        else if (last == first && size == q.length) {
             tmp_last = last + q.length;
         }
         else
             tmp_last = last;
-        int index = (StdRandom.uniform(first, tmp_last+1) % q.length);
+        
+        int index = (StdRandom.uniform(first, tmp_last) % q.length);
         return q[index];
     }
     
@@ -133,16 +122,21 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     
     private class RandomIterator implements Iterator<Item> {
         private int index;
-        private int tmp_last;
+        private int tmpLast;
+        
         public RandomIterator() {
        
-        if(last < first)
+         if (last < first)
         {
-            tmp_last = last + q.length;
+            tmpLast = last + q.length;
+        }
+        else if (last == first && size == q.length) {
+            tmpLast = last + q.length;
         }
         else
-            tmp_last = last;
-        index = (StdRandom.uniform(first, tmp_last) % q.length);
+            tmpLast = last;
+        
+        index = (StdRandom.uniform(first, tmpLast) % q.length);
         }
         
         public boolean hasNext() {
@@ -156,7 +150,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException();
             int index_next;
             do {
-                index_next = (StdRandom.uniform(first, tmp_last) % q.length);
+                index_next = (StdRandom.uniform(first, tmpLast) % q.length);
             } while(index == index_next);
             return q[index_next];
                 
