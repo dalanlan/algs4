@@ -63,18 +63,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty())
             throw new NoSuchElementException("Queue underflow");
        
-//        int tmp_last;
-//        if (last < first)
-//        {
-//            tmp_last = last + q.length;
-//        }
-//        else if (last == first && size == q.length) {
-//            tmp_last = last + q.length;
-//        }
-//        else
-//            tmp_last = last;
-        
-//        int index = (StdRandom.uniform(first, tmp_last) % q.length);
         int index = (StdRandom.uniform(first, first+size) % q.length);
         
         Item tmp = q[index];
@@ -96,19 +84,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public Item sample() {
         if (isEmpty())
             throw new NoSuchElementException("Queue underflow");
-        
-//        int tmp_last;
-//        if (last < first)
-//        {
-//            tmp_last = last + q.length;
-//        }
-//        else if (last == first && size == q.length) {
-//            tmp_last = last + q.length;
-//        }
-//        else
-//            tmp_last = last;
-//        
-//        int index = (StdRandom.uniform(first, tmp_last) % q.length);
+
         int index = (StdRandom.uniform(first, first+size) % q.length);
         return q[index];
     }
@@ -125,32 +101,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
        
         private int current = 0;
         private int[] shuffleIndex = new int[size];
-        
-//        public RandomIterator() {
-//       
-//         if (last < first)
-//        {
-//            tmpLast = last + q.length;
-//        }
-//        else if (last == first && size == q.length) {
-//            tmpLast = last + q.length;
-//        }
-//        else
-//            tmpLast = last;
-//        
-//        i = (StdRandom.uniform(first, tmpLast) % q.length);
-//        }
-        
+  
         public boolean hasNext() {
-            //return !isEmpty();
+
             if (isEmpty())
                return false;
-            
-//            if (current == 0) {
-//                for (int i = 0; i < size; i++)
-//                    shuffleIndex[i] = i;
-//                StdRandom.shuffle(shuffleIndex);
-//            }
             return current < size;
                 
         }
@@ -168,17 +123,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException();
             return q[shuffleIndex[current++]];
                    
-                
-//            if (!hasNext())
-//                throw new NoSuchElementException();
-//            int index_next;
-//            do {
-//                index_next = (StdRandom.uniform(first, tmpLast) % q.length);
-//            } while(i == index_next);
-//           i = index_next;
-//            return q[index_next];
-//                
-//        }
           }
     }
     
