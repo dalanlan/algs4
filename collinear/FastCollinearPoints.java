@@ -30,9 +30,10 @@ public class FastCollinearPoints {
         }
         for(int i = 0; i < lengthOfPoints; i++) {
             Arrays.sort(pointsTmp, points[i].slopeOrder());
-            for(int j = 0; j < lengthOfPoints-2; j++) {
+            for(int j = 1; j < lengthOfPoints-2; j++) {
                 // pointsTmp[j], pointsTmp[j+1], pointsTmp[j+2] -- points[i]
                 double res1 = points[i].slopeTo(pointsTmp[j]); 
+                StdOut.println("res1:"+res1);
                 if (res1 == Double.NEGATIVE_INFINITY) {
                     throw new IllegalArgumentException("the constructor contains a repeated point");
                 }
@@ -41,11 +42,13 @@ public class FastCollinearPoints {
                 if (res2 == Double.NEGATIVE_INFINITY) {
                     throw new IllegalArgumentException("the constructor contains a repeated point");
                 }
+                StdOut.println("res2:"+res2);
                 if (res1 != res2) {
                     continue;
                 }
                 pos++; //pos = 2
                 res2 = points[i].slopeTo(pointsTmp[j+pos]); //pointsTmp[j+2]
+                StdOut.println("res2:"+res2);
                 if (res2 == Double.NEGATIVE_INFINITY) {
                     throw new IllegalArgumentException("the constructor contains a repeated point");
                 }
@@ -64,8 +67,13 @@ public class FastCollinearPoints {
                     }
                     pos++;
                 }
-                
-                segmentsTmp[numberOfSegments] = new LineSegment(points[i],points[j+pos]);
+                StdOut.println("***************");
+                StdOut.println(points[i].toString());
+                for (int k = 1; k < pos; k++) {
+                    StdOut.println(pointsTmp[j + k].toString());
+                }
+                StdOut.println("***************");
+                segmentsTmp[numberOfSegments] = new LineSegment(points[i],pointsTmp[j+pos-1]);
                 numberOfSegments++;
                 }
         }
