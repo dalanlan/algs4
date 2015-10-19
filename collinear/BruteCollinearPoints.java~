@@ -1,0 +1,41 @@
+/******************************************************************************
+ *  Compilation:  javac BruteCollinearPoints.java
+ *  Execution:    java BruteCollinearPoints
+ *  Dependencies: none
+ *  
+ ******************************************************************************/
+
+
+public class BruteCollinearPoints {
+    
+    int numberOfSegments = 0;
+    LineSegment[] lineSegment;
+    
+    public sortPointsArray(Point[] points) {
+        
+    }
+    // finds all line segments containing 4 points
+    public BruteCollinearPoints(Point[] points) {
+        if (points == null)
+            throw new NullPointerException("the arguement of constructor is null");
+        
+        // sort to detect duplicate elements
+        Arrays.sort(points);
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new NullPointerException("the arguement of constructor is null");
+        }
+        
+    }
+    
+    // the number of line segments
+    public int numberOfSegments() {
+        return numberOfSegments;
+    }
+    
+    // the line segments
+    public LineSegment[] segments() {
+        
+    }
+    
+}

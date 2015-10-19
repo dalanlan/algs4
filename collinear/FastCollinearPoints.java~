@@ -1,0 +1,21 @@
+/******************************************************************************
+ *  Compilation:  javac FastCollinearPoints.java
+ *  Execution:    java FastCollinearPoints [input-file]
+ *  Dependencies: Point.java; LineSegment.java
+ *  
+ ******************************************************************************/
+public class FastCollinearPoints {
+    int numberOfSegments = 0;zhuang
+    LineSegment[] segments;
+    
+    public FastCollinearPoints(Point[] points) {
+        
+        
+    }
+    public int numberOfSegments() {
+        return int numberOfSegments;
+    }
+    public LineSegment[] segments() {
+        return segments;
+    }
+}
