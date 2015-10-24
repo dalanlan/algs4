@@ -7,10 +7,10 @@
  *  For use on Coursera, Algorithms Part I programming assignment.
  *
  ******************************************************************************/
-import edu.princeton.cs.algs4.In;
+//import edu.princeton.cs.algs4.In;
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdOut;
+//import edu.princeton.cs.algs4.StdOut;
 
 public class Point implements Comparable<Point> {
 
@@ -70,7 +70,7 @@ public class Point implements Comparable<Point> {
             return +0.0;
         }
         else {
-            return (double)(that.y - this.y)/(that.x - this.x);
+            return (double) (that.y - this.y)/(that.x - this.x);
         }
     }
 
@@ -109,10 +109,10 @@ public class Point implements Comparable<Point> {
         public int compare(Point p1, Point p2) {
             double slopeTo1 = slopeTo(p1);
             double slopeTo2 = slopeTo(p2);
-            if (slopeTo1 < slopeTo2) return -1;
-            if (slopeTo1 > slopeTo2) return +1;
-            return 0;
-                
+//            if (slopeTo1 < slopeTo2) return -1;
+//            if (slopeTo1 > slopeTo2) return +1;
+//            return 0;
+            return Double.compare(slopeTo1, slopeTo2);
             
         }
     }

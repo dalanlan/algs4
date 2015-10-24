@@ -6,69 +6,72 @@
  ******************************************************************************/
 import java.util.Arrays;
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdIn;
+
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdDraw;
 
 public class BruteCollinearPoints {
     
-    int numberOfSegments = 0;
-    LineSegment[] lineSegment;
-    
+    private int numberOfSegments = 0;
+    private LineSegment[] lineSegment;
     
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
         if (points == null)
-            throw new NullPointerException("the arguement of constructor is null");
+            throw new NullPointerException("null arguement");
         
         // sort to detect duplicate elements
-        Arrays.sort(points);
-//        for (Point p : points) {
+        
+
+        int sizeOfPoints = points.length;
+        Point[] pointsTmp = new Point[sizeOfPoints];
+        for (int n = 0; n < sizeOfPoints; n++) {
+            if (points[n] == null) 
+                throw new NullPointerException("null arguement");
+            pointsTmp[n] = points[n];
+        }
+//        
+//        for (Point p : pointsTmp) {
 //            StdOut.println(p.toString());
 //        }
-        int sizeOfPoints = points.length;
-       
-        LineSegment[] lineSegmentTmp = new LineSegment[sizeOfPoints*(sizeOfPoints-1)/2];
+        
+        Arrays.sort(pointsTmp);
+        LineSegment[] lineSegmentTmp = new LineSegment[sizeOfPoints*
+                                                       (sizeOfPoints-1)/2];
         double res1, res2, res3; //res1: [i,j]; res2:[i,k]; res3:[i,m];
-        int i,j,k,m;
-        for (i = 0; i < sizeOfPoints - 3; i++) { // points[i]
-            if (points[i] == null)
-                throw new NullPointerException("the arguement of constructor is null");
-            for (j = i + 1; j < sizeOfPoints - 2; j++ ) {
-                if (points[j] == null)
-                    throw new NullPointerException("the arguement of constructor is null");
-                
-                res1 = points[i].slopeTo(points[j]);
+        int i, j, k, m;
+        
+        for (i = 0; i < sizeOfPoints; i++) { // points[i]
+            for (j = i + 1; j < sizeOfPoints; j++) {
+                res1 = pointsTmp[i].slopeTo(pointsTmp[j]);
                 if (res1 == Double.NEGATIVE_INFINITY) {
-                    throw new IllegalArgumentException("the constructor contains a repeated point");
+                    throw new IllegalArgumentException("repeated point");
                 }
-                for (k = j + 1; k < sizeOfPoints - 1;k++) {
-                    if (points[k] == null)
-                        throw new NullPointerException("the arguement of constructor is null");
-                    
-                    res2 = points[i].slopeTo(points[k]);
+                for (k = j + 1; k < sizeOfPoints; k++) {
+                    res2 = pointsTmp[i].slopeTo(pointsTmp[k]);
                     if (res2 == Double.NEGATIVE_INFINITY) {
-                        throw new IllegalArgumentException("the constructor contains a repeated point");
+                        throw new IllegalArgumentException("repeated point");
                     }
-                    if (res1 != res2)
-                        continue;
+//                    if (res1 != res2)
+//                        continue;
                     for (m = k + 1; m < sizeOfPoints; m++) {
-                        if (points[m] == null)
-                            throw new NullPointerException("the arguement of constructor is null");
                         
-                        res3 = points[i].slopeTo(points[m]);
+                        res3 = pointsTmp[i].slopeTo(pointsTmp[m]);
                         if (res3 == Double.NEGATIVE_INFINITY) {
-                            throw new IllegalArgumentException("the constructor contains a repeated point");
+                            throw new IllegalArgumentException("repeated point");
                         }
                         
-                        if (res1 == res3) {
-//                            StdOut.println("res1:"+res1+",res2:"+res2+",res3:"+res3);
+                                           
 //                            StdOut.println(points[i].toString());
 //                            StdOut.println(points[j].toString());
 //                            StdOut.println(points[k].toString());
 //                            StdOut.println(points[m].toString());
+                        if (res1 == res2 && res1 == res3) {
+//                            StdOut.println(pointsTmp[i]+"->"+pointsTmp[j]+"->"
+//                            +pointsTmp[k]+"->"+pointsTmp[m]);
 //                            StdOut.println(numberOfSegments);
-                            lineSegmentTmp[numberOfSegments] = new LineSegment(points[i], points[m]);
+                            lineSegmentTmp[numberOfSegments] = new 
+                                LineSegment(pointsTmp[i], pointsTmp[m]);
                             numberOfSegments++;
                         }
                     }
@@ -76,7 +79,7 @@ public class BruteCollinearPoints {
             }
         }
         lineSegment = new LineSegment[numberOfSegments];
-        for(int pos = 0; pos < numberOfSegments; pos++) {
+        for (int pos = 0; pos < numberOfSegments; pos++) {
             lineSegment[pos] = lineSegmentTmp[pos];
         }
         
@@ -89,7 +92,7 @@ public class BruteCollinearPoints {
     
     // the line segments
     public LineSegment[] segments() {
-        return lineSegment;
+        return lineSegment.clone();
     }
     
     public static void main(String[] args) {
@@ -121,9 +124,16 @@ public class BruteCollinearPoints {
     
     //StdOut.println("number of segments is " + collinear.numberOfSegments);
     
-    for (LineSegment segment : collinear.segments()) {
-        StdOut.println(segment);
-        segment.draw();
+    for (int i = 0; i < collinear.numberOfSegments(); i++) {
+//        StdOut.println(segment);
+//        segment.draw();
+        LineSegment[] newSeg = collinear.segments();
+        newSeg[i] = new LineSegment(points[0], points[1]);
     }
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+        //segment.draw();
+        }
+    
 }
 }
