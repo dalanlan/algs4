@@ -52,11 +52,6 @@ public class FastCollinearPoints {
         
         Point[] auxPoints = pointsClone.clone();
         for (int i = 0; i < lengthOfPoints; i++) {
-            
-//            Point[] pointsTmp = new Point[lengthOfPoints-(i+1)];
-//            for (int pos = i+1; pos < lengthOfPoints; pos++) {
-//                pointsTmp[pos-(i+1)] = pointsClone[pos];
-//            }
             //Arrays.sort(pointsClone);
             Arrays.sort(pointsClone, auxPoints[i].slopeOrder());
             
@@ -112,12 +107,10 @@ public class FastCollinearPoints {
 //                    }
 //                    pos++;
 //                }
-////                StdOut.println("***************");
 ////                StdOut.println(auxPoints[i].toString());
 ////                for (int k = 0; k < pos; k++) {
 ////                    StdOut.println(pointsClone[j + k].toString());
 ////                }
-////                StdOut.println("***************");
 ////                if (!exist(auxPoints[i], res1)) {
 ////                    segmentsTmp[numberOfSegments] = new 
 ////                        LineSegment(auxPoints[i], pointsClone[j+pos-1]);
@@ -140,47 +133,94 @@ public class FastCollinearPoints {
 ////                segmentsTmp[numberOfSegments] = new LineSegment(auxPoints[i], 
 ////                                                                endPoint);
 //                node[numberOfSegments] = new Node(firstEnd, lastEnd);
-////                StdOut.println("***************");
 ////                StdOut.println(auxPoints[i].toString()+"->"+endPoint.toString());
 //                numberOfSegments++;
 //        }
         }
+        sort(node, numberOfSegments);
         
-        // Remove duplicate
+//        for(int w = 0; w < numberOfSegments; w++) {
+//            StdOut.println(node[w].first.toString()+"->"+node[w].last.toString());
+//        }
+        if (numberOfSegments >= 1) {
+        int total = 1;
+        segments = new LineSegment[numberOfSegments];
         
-        //mergeSort(segmentsTmp, 0, numberOfSegments-1);
-        int total = 0;
-        int[] flag = new int[numberOfSegments];
+        Node prev = node[0];
+        segments[0] = new LineSegment(node[0].first, node[0].last);
         
-        for (int i = 0; i < numberOfSegments; i++) {
-            double res = node[i].first.slopeTo(node[i].last);
-//            StdOut.println("***************");
-
-            if (!exist(node[i].first, res) && !exist(node[i].last, res)) {
-                total++;
-                addCollection(node[i].first, res);
-                addCollection(node[i].last, res);
-                flag[i] = 1;
+        for (int w = 1; w < numberOfSegments; w++) {
+            if(prev.first.compareTo(node[w].first) == 0 && 
+               prev.last.compareTo(node[w].last) == 0) {
+                continue;
+            }
+            else {
+                segments[total++] = new LineSegment(node[w].first, node[w].last);
+                prev = node[w];
             }
         }
-//        for(int i = 0; i < numberOfSegments; i++) {
-//            if (flag[i] == 1)
-//                StdOut.println("index:"+i);
-//        }
-        segments = new LineSegment[total];
-        int pos = 0;
-        for (int i = 0; i < numberOfSegments; i++) {
-            if (flag[i] == 1)
-                segments[pos++] = new LineSegment(node[i].first, node[i].last);
-           
-        }
-   
         numberOfSegments = total;
+        }
+        else
+        {
+            numberOfSegments = 0;
+        }
+        //original solution
+//        int total = 0;
+//        int[] flag = new int[numberOfSegments];
+//        
+//        for (int i = 0; i < numberOfSegments; i++) {
+//            double res = node[i].first.slopeTo(node[i].last);
+//
+//            if (!exist(node[i].first, res) && !exist(node[i].last, res)) {
+//                total++;
+//                addCollection(node[i].first, res);
+//                addCollection(node[i].last, res);
+//                flag[i] = 1;
+//            }
+//        }
+//
+//        segments = new LineSegment[total];
+//        int pos = 0;
+//        for (int i = 0; i < numberOfSegments; i++) {
+//            if (flag[i] == 1)
+//                segments[pos++] = new LineSegment(node[i].first, node[i].last);
+//           
+//        }
+//   
+//        numberOfSegments = total;
+        
+        
     
     }
-//    private void mergeSort(LineSegment[] array, int firstIndex, int lastIndex) {
-//        
-//    }
+    private void sort(Node[] a, int length) {
+        Node[] aux = new Node[length];
+        sort(a, aux, 0, length-1);                        
+    }
+    private void sort(Node[] a, Node[] aux, int lo, int hi) {
+        if (hi <= lo)
+            return;
+        int mid = lo + (hi-lo)/2;
+        sort(a, aux, lo, mid);
+        sort(a, aux, mid+1, hi);
+        merge(a, aux, lo, mid, hi);
+    }
+    private void merge(Node[] a, Node[] aux, int lo, int mid, int hi) {
+        for (int k = lo; k <= hi; k++) {
+            aux[k] = a[k];
+        }
+        int i = lo, j = mid + 1;
+        for (int k = lo; k <= hi; k++) {
+            if (i > mid) a[k] = aux[j++];
+            else if (j > hi) a[k] = aux[i++];
+            else if (less(aux[j], aux[i]) < 0) a[k] = aux[j++];
+            else a[k] = aux[i++];
+  
+        }
+    }
+    private int less(Node p, Node q) {
+        return p.first.compareTo(q.first);
+    }
     private void addCollection(Point p, double res) {
         if (!collection.containsKey(res)) {
             collection.put(res, new ArrayList<Point>());
@@ -203,7 +243,7 @@ public class FastCollinearPoints {
     }
     
     public LineSegment[] segments() {
-        return segments.clone();
+        return Arrays.copyOf(segments, numberOfSegments);
     }
         public static void main(String[] args) {
 
