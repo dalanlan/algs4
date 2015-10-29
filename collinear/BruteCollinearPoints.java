@@ -132,7 +132,7 @@ public class BruteCollinearPoints {
     }
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
-        //segment.draw();
+        segment.draw();
         }
     
 }

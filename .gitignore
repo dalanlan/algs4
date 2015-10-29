@@ -6,3 +6,4 @@ findbugs*
 hello/*
 */*.zip
 */*.class
+*/*.java~
