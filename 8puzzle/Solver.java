@@ -4,7 +4,7 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.MinPQ;
 
 public class Solver {
-    private int move = -1; // initialization
+    
     private boolean isSolvable;
     private Stack<Board> solution;
     
@@ -28,56 +28,73 @@ public class Solver {
         public int compareTo(SearchNode that) {
             if (this.priority() > that.priority()) return +1;
             if (this.priority() < that.priority()) return -1;
+            if (this.board.manhattan() > that.board.manhattan()) return +1;
+            if (this.board.manhattan() < that.board.manhattan()) return -1;
             return 0;
         }
     }
     public Solver(Board initial) {
         solution = new Stack<Board>();
         if (initial.isGoal()) {
-            move = 0;
+            
             isSolvable = true;
             solution.push(initial);
             return;
         }
         if (initial.twin().isGoal()) {
             isSolvable = false;
-            return; // move = -1 now
+            return; 
         }
         MinPQ<SearchNode> pq = new MinPQ<SearchNode>();
         MinPQ<SearchNode> pqTwin = new MinPQ<SearchNode>();
+        MinPQ<SearchNode> tmp = pq;
         
-        pq.insert(SearchNode(initial, null));
-        pqTwin.insert(SearchNode(initial.twin(),null));
+        pq.insert(new SearchNode(initial, null));
+        pqTwin.insert(new SearchNode(initial.twin(), null));
         
-        move++; // move = 0, pq.min == initial
-        while (!pq.min.board.isGoal() && !pqTwin.min.board.isGoal()) {
-            SearchNode minNode = pq.min;
-            SearchNode minNodeTwin = pqTwin.min.board;
-            move++;
-            for (Board b:pq.delMin().board.neighbors()) {
-                if (b.equals(minNode.board))
-                    continue;
-                pq.insert(SearchNode(b, minNode));
-            }
-            for (Board b:pq.delMin().board.neighbors()) {
-                if (b.equals(minNodeTwin.board)) 
-                    continue;
-                pqTwin.insert(SearchNode(b, minNodeTwin));
-            }
-        }
-        if (pq.min.board.isGoal()) {
-            isSolvable = true;
+        SearchNode minNode;
+        while (true) {
             
-            SearchNode node = pq.min;
-            solution.push(node.board);
-            while(node.father != null) {
-                node = node.father;
-                solution.push(node.board);
-            }    
+            minNode = tmp.delMin();
+            //minNodeTwin = pqTwin.delMin();
+
+            if (minNode.board.isGoal()) {
+                isSolvable = (tmp == pq);
+                if (isSolvable) {
+                
+                solution.push(minNode.board);
+                while (minNode.father != null) {
+                    minNode = minNode.father;
+                    solution.push(minNode.board);
+                }
+                }
+            return;
+            }
+            
+//            if (minNodeTwin.board.isGoal()) {
+//                isSolvable = false;
+//                return;
+//            }
+
+            for (Board b:minNode.board.neighbors()) {
+                if (minNode.father != null && b.equals(minNode.father.board))
+                    continue;
+                tmp.insert(new SearchNode(b, minNode));
+                
+            }
+
+//            for (Board b:minNodeTwin.board.neighbors()) {
+//                if (minNodeTwin.father != null &&
+//                    b.equals(minNodeTwin.father.board)) 
+//                    continue;
+//                pqTwin.insert(new SearchNode(b, minNodeTwin));
+//
+//            }
+            tmp = (tmp == pq) ? pqTwin : pq;
+            
         }
-        else {
-            isSolvable = false;
-        }
+        
+        
         
     }
     
@@ -87,7 +104,7 @@ public class Solver {
     
     // min number of moves to solve initial board; -1 if unsolvable
     public int moves() {
-        return move;
+        return solution.size()-1;
     }
     
     public Iterable<Board> solution() {
@@ -106,7 +123,13 @@ public class Solver {
         for (int j = 0; j < N; j++)
             blocks[i][j] = in.readInt();
     Board initial = new Board(blocks);
-
+//    StdOut.println(initial.toString());
+//    StdOut.println(initial.manhattan());
+    
+//    Iterable<Board> newboards = initial.neighbors();
+//      for (Board bo : newboards)
+//          StdOut.println(bo.toString());
+      
     // solve the puzzle
     Solver solver = new Solver(initial);
 

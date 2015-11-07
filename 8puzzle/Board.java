@@ -2,14 +2,14 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 //import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.MinPQ;
+
 
 public class Board {
     private int[][] board;
     private int dim;
     
-    private int iBlank=-1;
-    private int jBlank=-1;
+    private int iBlank;
+    private int jBlank;
     
     public Board(int[][] blocks) {
         // null arguments
@@ -33,10 +33,10 @@ public class Board {
         }
     }
     
-    private void swap(int[][] board, int i0, int j0, int i1, int j1) {
-        int tmp = board[i0][j0];
-        board[i0][j0] = board[i1][j1];
-        board[i1][j1] = tmp;
+    private void swap(int[][] blo, int i0, int j0, int i1, int j1) {
+        int tmp = blo[i0][j0];
+        blo[i0][j0] = blo[i1][j1];
+        blo[i1][j1] = tmp;
     }
     // dimension
     public int dimension() {
@@ -47,7 +47,7 @@ public class Board {
         int hamming = 0;
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                if ( board[i][j] != 0 && board[i][j] != i*dim + j + 1) {
+                if (board[i][j] != 0 && board[i][j] != i*dim + j + 1) {
                     hamming++;
                 }
             }
@@ -59,10 +59,11 @@ public class Board {
         int iTmp, jTmp, diff, manhattan = 0;
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                if ( board[i][j] != 0 && board[i][j] != i*dim + j + 1) {
+                if (board[i][j] != 0 && board[i][j] != i*dim + j + 1) {
                     iTmp = (board[i][j]-1)/dim;
-                    jTmp = (board[i][j]-1)%dim;
-                    diff = Math.abs(iTmp - i + jTmp -j);
+                    jTmp = (board[i][j]-1) % dim;
+                    diff = Math.abs(iTmp - i) + Math.abs(jTmp -j);
+                    //StdOut.println("i: "+i+", j: "+j+", diff: "+diff);
                     manhattan += diff;
                 }
             }
@@ -79,7 +80,7 @@ public class Board {
     public Board twin() {
         Board twin = new Board(board);
         // exchange the pairs of the same row
-        int i = (iBlank+1)%dim;
+        int i = (iBlank+1) % dim;
         swap(twin.board, i, 0, i, 1);
         return twin;
     }
@@ -114,30 +115,34 @@ public class Board {
         
         //left
         if (j > 0) {
+            swap(board, i, j, i, j-1);
             Board newBoard = new Board(board);
-            swap(newBoard.board, i, j, i, j-1);
             neigh.enqueue(newBoard);
+            swap(board, i, j, i, j-1);
         }
         
         //right
-        if (j<dim-1) {
+        if (j < dim-1) {
+            swap(board, i, j, i, j+1);
             Board newBoard = new Board(board);
-            swap(newBoard.board, i, j, i, j+1);
             neigh.enqueue(newBoard);
+            swap(board, i, j, i, j+1);
         }
         
         //up 
         if (i > 0) {
+            swap(board, i, j, i-1, j);
             Board newBoard = new Board(board);
-            swap(newBoard.board, i, j, i-1, j);
             neigh.enqueue(newBoard);
+            swap(board, i, j, i-1, j);
         }
         
         //down
         if (i < dim-1) {
+            swap(board, i, j, i+1, j);
             Board newBoard = new Board(board);
-            swap(newBoard.board, i, j, i+1, j);
             neigh.enqueue(newBoard);
+            swap(board, i, j, i+1, j);
         }
         return neigh;
            
@@ -157,5 +162,26 @@ public class Board {
         return s.toString();
     }
     
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+    In in = new In(args[0]);
+    int N = in.readInt();
+    int[][] blocks = new int[N][N];
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            blocks[i][j] = in.readInt();
+    Board initial = new Board(blocks);
+//    StdOut.println(initial.toString());
+//    StdOut.println(initial.manhattan());
+    
+//    Iterable<Board> newboards = initial.neighbors();
+//      for (Board bo : newboards)
+//          StdOut.println(bo.toString());
+
+      Iterable<Board> newboards = initial.neighbors();
+      for (Board bo : newboards)
+          StdOut.println(bo.toString());
+      StdOut.println(initial.dimension());
+      StdOut.println(initial.hamming());
+      StdOut.println(initial.manhattan());
+    }
 }
